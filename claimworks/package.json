@@ -11,6 +11,7 @@
     "cape": "tsx scripts/cape.ts",
     "remediate": "tsx scripts/remediate.ts",
     "reconcile": "tsx scripts/reconcile.ts",
+    "ingest": "tsx scripts/ingest.ts",
     "db:push": "drizzle-kit push",
     "test": "vitest run"
   },
