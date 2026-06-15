@@ -1,0 +1,7 @@
+Entry Number,Status,Rejection Code,Rejection Reason
+ABC-1000001-1,Accepted,,
+ABC10000022,Rejected,R12,Invalid entry number format
+ABC-1000007-7,Rejected,R30,Entry not eligible for CAPE Phase 1
+ABC-1000005-5,Rejected,R31,Ineligible - liquidated outside protest window
+ABC-1000003-3,Rejected,R40,Filer code not authorized for this entry
+ABC-9999999-9,Rejected,R99,Unknown entry not on file

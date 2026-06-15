@@ -1,0 +1,7 @@
+Entry Number,Refund Amount,Interest Amount,ACH Trace Number,Refund Status
+ABC-1000001-1,5000,120.50,ACH-99001,Paid
+ABC-1000002-2,12000,300,ACH-99001,Paid
+ABC-1000007-7,1200,15,ACH-99002,Paid
+ABC-1000005-5,20000,0,,Funds Diverted - applied to outstanding debt
+ABC-1000003-3,0,0,,No refund issued
+ZZZ-5000000-0,4000,50,ACH-99003,Paid
