@@ -35,6 +35,11 @@ export, walk into the meeting with their number.
   sink + opt-in store. The opt-in routes persist to Postgres + `audit_log` when
   `DATABASE_URL` is set (run `npm run db:push` to apply the opt-in columns), and fall
   back to the in-memory stub otherwise. Row↔state mapping is pure and unit-tested.
+- `src/db/{ingest-mapping,ingest}.ts` + `scripts/ingest.ts` — load a parsed book into
+  Neon: the pure mapper denormalizes engine output (claim path/deadline, est. duty/interest,
+  Ch.99 codes, reasons, engineVersion) onto importer/entry/line insert payloads; the thin
+  Drizzle glue upserts importers and inserts entries/lines + an audit row.
+  (`npm run ingest <entries.csv> --brokerage <uuid>`, requires `DATABASE_URL`)
 - `src/lib/cape.ts` + `scripts/cape.ts` — CAPE Declaration generator: opted-in
   CAPE_NOW entries → CBP-template CSV(s), chunked to the 9,999-entry cap and batched
   per importer, with a deterministic pre-validation pass that replicates the known
@@ -65,6 +70,9 @@ export, walk into the meeting with their number.
   (`signOffDeclaration`: a draft cannot reach `ready` without a human signer name).
 - `app/dashboard` + `app/dashboard/declarations/[id]` — authed brokerage view (importers
   ranked, claim pipeline, urgent deadlines) and declaration detail with a QC sign-off action.
+  Reads live data from Postgres when `DATABASE_URL` is set (`src/db/dashboard-store.ts`
+  reconstructs entries via `src/db/entry-mapping.ts` and re-runs the engine), empty state
+  otherwise. Brokerage is resolved from the signed-in email (`resolveBrokerageId`).
 - `src/lib/rev615.ts` + `scripts/reconcile.ts` — REV-615 (Trade CAPE Detail Refund report)
   ingestion + reconciliation: per-entry status (paid/funds_diverted/no_refund/unmatched),
   consolidated ACH payment matching, and fee owed with broker/Reliquify split. Fees accrue

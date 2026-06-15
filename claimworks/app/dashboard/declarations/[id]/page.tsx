@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getSessionEmail } from "@/lib/session";
-import { getDashboardStore } from "@/lib/dashboard-store";
+import { getDashboard } from "@/lib/dashboard-store";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +14,8 @@ async function signOffAction(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   const signer = String(formData.get("signer") ?? "");
   try {
-    await getDashboardStore().signOff(id, signer);
+    const { store } = await getDashboard(email);
+    await store.signOff(id, signer);
     revalidatePath(`/dashboard/declarations/${id}`);
   } catch (e) {
     redirect(`/dashboard/declarations/${id}?error=${encodeURIComponent(e instanceof Error ? e.message : "sign-off failed")}`);
@@ -33,7 +34,8 @@ export default async function DeclarationDetailPage({
   const { id } = await params;
   const { error } = await searchParams;
 
-  const vm = await getDashboardStore().getDeclarationDetail(id);
+  const { store } = await getDashboard(email);
+  const vm = await store.getDeclarationDetail(id);
 
   return (
     <main style={{ maxWidth: 860, margin: "32px auto", padding: "0 20px" }}>

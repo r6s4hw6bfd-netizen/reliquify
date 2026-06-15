@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSessionEmail } from "@/lib/session";
-import { getDashboardStore } from "@/lib/dashboard-store";
+import { getDashboard } from "@/lib/dashboard-store";
 import { DECLARATION_STATUSES } from "@/lib/dashboard";
 
 export const dynamic = "force-dynamic";
@@ -11,7 +11,8 @@ export default async function DashboardPage() {
   const email = await getSessionEmail();
   if (!email) redirect("/login");
 
-  const vm = await getDashboardStore().getBrokerageView("default");
+  const { store, brokerageId } = await getDashboard(email);
+  const vm = brokerageId ? await store.getBrokerageView(brokerageId) : undefined;
 
   return (
     <main style={{ maxWidth: 960, margin: "32px auto", padding: "0 20px" }}>
