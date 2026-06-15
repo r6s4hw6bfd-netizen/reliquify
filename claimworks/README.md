@@ -31,6 +31,10 @@ export, walk into the meeting with their number.
   (`npm run report <csv> [as-of-date] -- --broker "Name" [--color "#1e3a5f"] [--logo url]`).
 - `src/db/schema.ts` — Drizzle schema incl. declarations, validation results,
   QC sign-off gate, and audit log.
+- `src/db/{audit,optin-store,optin-mapping,persistence}.ts` — Drizzle-backed audit
+  sink + opt-in store. The opt-in routes persist to Postgres + `audit_log` when
+  `DATABASE_URL` is set (run `npm run db:push` to apply the opt-in columns), and fall
+  back to the in-memory stub otherwise. Row↔state mapping is pure and unit-tested.
 - `src/lib/cape.ts` + `scripts/cape.ts` — CAPE Declaration generator: opted-in
   CAPE_NOW entries → CBP-template CSV(s), chunked to the 9,999-entry cap and batched
   per importer, with a deterministic pre-validation pass that replicates the known

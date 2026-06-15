@@ -1,22 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { handleUnsubscribe, arrayAuditSink, inMemoryOptInStore } from "@/lib/optin";
+import { handleUnsubscribe } from "@/lib/optin";
+import { getOptInPersistence } from "@/db/persistence";
 
 export const runtime = "nodejs";
 
 /**
  * GET /api/optin/unsubscribe?ior=12-3456789  — honors an importer unsubscribe.
  *
- * NOTE: persistence here uses the ephemeral in-memory store as a stub; production wires a
- * Drizzle-backed OptInStore (importers.opt_in_status) and a real audit_log sink. The
- * unsubscribe is always honored regardless of prior status.
+ * Persists via the Drizzle-backed store + audit_log when DATABASE_URL is set; falls back to
+ * the in-memory stub otherwise. The unsubscribe is always honored regardless of prior status.
  */
-const store = inMemoryOptInStore();
-const audit = arrayAuditSink();
-
 export async function GET(req: NextRequest) {
   const ior = req.nextUrl.searchParams.get("ior");
   if (!ior) return NextResponse.json({ error: "ior is required" }, { status: 400 });
 
+  const { store, audit } = await getOptInPersistence();
   const existing = await store.getByIor(ior);
   const state =
     existing ?? {
