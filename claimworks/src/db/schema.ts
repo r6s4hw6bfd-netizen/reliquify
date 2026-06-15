@@ -34,6 +34,12 @@ export const importers = pgTable("importers", {
   achVerified: boolean("ach_verified").default(false).notNull(),
   form4811OnFile: boolean("form_4811_on_file").default(false).notNull(),
   optInStatus: text("opt_in_status").default("pending").notNull(), // pending | sent | signed | declined
+  // Opt-in sequence tracking (Task 4 persistence)
+  optInTouchesSent: integer("opt_in_touches_sent").default(0).notNull(),
+  optInLastTouchAt: timestamp("opt_in_last_touch_at"),
+  optInUnsubscribed: boolean("opt_in_unsubscribed").default(false).notNull(),
+  optInEnvelopeId: text("opt_in_envelope_id"),
+  optInSignedAt: timestamp("opt_in_signed_at"),
   feeRatePct: numeric("fee_rate_pct").default("5"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
