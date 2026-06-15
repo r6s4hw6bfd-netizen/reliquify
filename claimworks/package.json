@@ -12,6 +12,8 @@
     "remediate": "tsx scripts/remediate.ts",
     "reconcile": "tsx scripts/reconcile.ts",
     "ingest": "tsx scripts/ingest.ts",
+    "seed:demo": "tsx scripts/seed-demo.ts",
+    "verify:db": "tsx scripts/verify-db.ts",
     "db:push": "drizzle-kit push",
     "test": "vitest run"
   },
