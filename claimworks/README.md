@@ -55,6 +55,12 @@ export, walk into the meeting with their number.
   the remediation queue + resubmission file(s) + CBP dispute draft as JSON.
 - `app/api/optin/unsubscribe/route.ts` — GET `?ior=` honors an unsubscribe.
 - `app/api/optin/webhook/route.ts` — e-sign provider callback recording a signature.
+- `src/lib/auth.ts` + `src/lib/session.ts` — magic-link auth (HMAC-signed magic + session
+  tokens, no vendor). `app/login`, `app/api/auth/request`, `app/api/auth/verify`.
+- `src/lib/dashboard.ts` — brokerage/declaration view-models + the QC sign-off gate
+  (`signOffDeclaration`: a draft cannot reach `ready` without a human signer name).
+- `app/dashboard` + `app/dashboard/declarations/[id]` — authed brokerage view (importers
+  ranked, claim pipeline, urgent deadlines) and declaration detail with a QC sign-off action.
 
 ## Claim paths
 CAPE_NOW · CAPE_LATER_PHASE · PROTEST_REQUIRED (deadline attached, route to
@@ -64,8 +70,8 @@ counsel) · NEEDS_REVIEW · NOT_IEEPA. EXPIRED is never assigned automatically.
 1. ~~CAPE CSV generator + pre-validation against known rejection patterns~~ ✓ (`src/lib/cape.ts`)
 2. ~~Validation Result File parser + remediation loop~~ ✓ (`src/lib/validation.ts`)
 3. ~~Opt-in flow: engagement letter e-sign, Resend sequences~~ ✓ (`src/lib/optin.ts`)
-4. REV-615 ingestion, payment reconciliation, invoicing + broker split
-5. Dashboard
+4. ~~Dashboard: brokerage view, declaration detail, QC sign-off + magic-link auth~~ ✓
+5. REV-615 ingestion, payment reconciliation, invoicing + broker split
 
 ## Compliance notes
 - Filing is done by the licensed broker through their own ACE Portal login. This
