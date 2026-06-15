@@ -47,8 +47,14 @@ export, walk into the meeting with their number.
   (`npm run remediate <validation.csv> <entries.csv> --filer <CODE> [as-of-date]`)
 - `app/api/cape/route.ts` — POST a CSV (+ `?filer=&asOf=&optedIn=`), get the CAPE file(s)
   + pre-flight report as JSON.
+- `src/lib/optin.ts` — importer opt-in flow: white-labeled engagement email (estimate
+  labeled, broker-branded, unsubscribe link), capped reminder sequence (3 touches),
+  signature + unsubscribe handling. All side effects (Resend email, e-sign, audit,
+  persistence) behind injected interfaces; e-sign provider is stubbed pending vendor.
 - `app/api/remediate/route.ts` — POST `validation` + `book` CSVs (+ `?filer=&asOf=`), get
   the remediation queue + resubmission file(s) + CBP dispute draft as JSON.
+- `app/api/optin/unsubscribe/route.ts` — GET `?ior=` honors an unsubscribe.
+- `app/api/optin/webhook/route.ts` — e-sign provider callback recording a signature.
 
 ## Claim paths
 CAPE_NOW · CAPE_LATER_PHASE · PROTEST_REQUIRED (deadline attached, route to
@@ -57,7 +63,7 @@ counsel) · NEEDS_REVIEW · NOT_IEEPA. EXPIRED is never assigned automatically.
 ## Roadmap (stages 3-8)
 1. ~~CAPE CSV generator + pre-validation against known rejection patterns~~ ✓ (`src/lib/cape.ts`)
 2. ~~Validation Result File parser + remediation loop~~ ✓ (`src/lib/validation.ts`)
-3. Opt-in flow: engagement letter e-sign, Resend sequences
+3. ~~Opt-in flow: engagement letter e-sign, Resend sequences~~ ✓ (`src/lib/optin.ts`)
 4. REV-615 ingestion, payment reconciliation, invoicing + broker split
 5. Dashboard
 
