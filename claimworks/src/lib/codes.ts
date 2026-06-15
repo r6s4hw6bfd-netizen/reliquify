@@ -71,6 +71,31 @@ export const CAPE_TEMPLATE = {
 
 export type CapeColumnKey = (typeof CAPE_TEMPLATE.columns)[number]["key"];
 
+/** Email address CBP designated for CAPE refund correspondence / disputing rejections.
+ *  (CSMS CAPE guidance, 2026-04.) Reliquify only DRAFTS to this address — a human sends. */
+export const CBP_CAPE_CONTACT_EMAIL = "IEEPARefunds@cbp.dhs.gov";
+
+/**
+ * CAPE validation-result rejection handling — REGULATED CONFIG + HUMAN VERIFICATION.
+ *
+ * CBP returns a Validation Result File after a CAPE upload; the exact rejection-code
+ * catalog and column layout are published only in the ACE Portal CAPE guidance (cbp.gov
+ * blocks automated fetch). The pattern lists below are reconstructed from secondary CAPE
+ * guides and MUST be confirmed against the official rejection-code table before relying on
+ * any auto-disposition. They are matched against the rejection code/reason text; anything
+ * that does not match falls through to HUMAN_REVIEW (conservative by design — we never guess
+ * a federal refund eligibility). (Holland & Knight / Great Lakes CAPE guides, 2026-04.) */
+export const CAPE_REJECTION_RULES = {
+  /** Reasons we can deterministically correct and resubmit — currently only entry-number
+   *  normalization (dashes/whitespace/leading zeros). We claim AUTO_FIXABLE only when the
+   *  re-normalized number actually differs from what was submitted. */
+  autoFixablePatterns: [/format/i, /invalid entry\s*(?:number|no\.?)/i, /malformed/i, /leading zero/i],
+  /** Reasons that assert ineligibility. If our deterministic engine still classifies the
+   *  original entry as CAPE_NOW, the rejection is a candidate false positive -> RESUBMIT_AS_IS
+   *  plus a drafted dispute email. Otherwise -> HUMAN_REVIEW. */
+  eligibilityDisputePatterns: [/not\s+eligible/i, /ineligible/i, /liquidat/i, /outside.*window/i, /phase\s*1/i, /not.*cape/i],
+} as const;
+
 export const ENGINE_VERSION = "0.2.0";
 
 export function isIeepaCh99(hts: string): boolean {

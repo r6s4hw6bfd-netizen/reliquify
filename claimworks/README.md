@@ -39,8 +39,16 @@ export, walk into the meeting with their number.
   (`npm run cape <csv> --filer <CODE> [as-of-date] [--out dir] [--opted-in ior1,ior2]`)
 - `app/api/analyze/route.ts` — POST a CSV, get the analysis JSON (Vercel-ready).
 - `app/api/report/route.ts` — POST a CSV (+ `?broker=&color=&logo=`), get the branded PDF.
+- `src/lib/validation.ts` + `scripts/remediate.ts` — CBP Validation Result File parser
+  + remediation queue: dispositions each rejection as AUTO_FIXABLE (re-normalize +
+  resubmit), RESUBMIT_AS_IS (CBP false positive — engine still says CAPE_NOW, drafts a
+  dispute email to CBP), or HUMAN_REVIEW (the safe default for anything unrecognized).
+  Emits a re-validated resubmission CSV and a draft email — never sends.
+  (`npm run remediate <validation.csv> <entries.csv> --filer <CODE> [as-of-date]`)
 - `app/api/cape/route.ts` — POST a CSV (+ `?filer=&asOf=&optedIn=`), get the CAPE file(s)
   + pre-flight report as JSON.
+- `app/api/remediate/route.ts` — POST `validation` + `book` CSVs (+ `?filer=&asOf=`), get
+  the remediation queue + resubmission file(s) + CBP dispute draft as JSON.
 
 ## Claim paths
 CAPE_NOW · CAPE_LATER_PHASE · PROTEST_REQUIRED (deadline attached, route to
@@ -48,7 +56,7 @@ counsel) · NEEDS_REVIEW · NOT_IEEPA. EXPIRED is never assigned automatically.
 
 ## Roadmap (stages 3-8)
 1. ~~CAPE CSV generator + pre-validation against known rejection patterns~~ ✓ (`src/lib/cape.ts`)
-2. Validation Result File parser + remediation loop
+2. ~~Validation Result File parser + remediation loop~~ ✓ (`src/lib/validation.ts`)
 3. Opt-in flow: engagement letter e-sign, Resend sequences
 4. REV-615 ingestion, payment reconciliation, invoicing + broker split
 5. Dashboard
