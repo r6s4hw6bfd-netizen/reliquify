@@ -10,6 +10,7 @@
     "report": "tsx scripts/report.ts",
     "cape": "tsx scripts/cape.ts",
     "remediate": "tsx scripts/remediate.ts",
+    "reconcile": "tsx scripts/reconcile.ts",
     "db:push": "drizzle-kit push",
     "test": "vitest run"
   },

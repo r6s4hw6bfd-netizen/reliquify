@@ -61,6 +61,11 @@ export, walk into the meeting with their number.
   (`signOffDeclaration`: a draft cannot reach `ready` without a human signer name).
 - `app/dashboard` + `app/dashboard/declarations/[id]` — authed brokerage view (importers
   ranked, claim pipeline, urgent deadlines) and declaration detail with a QC sign-off action.
+- `src/lib/rev615.ts` + `scripts/reconcile.ts` — REV-615 (Trade CAPE Detail Refund report)
+  ingestion + reconciliation: per-entry status (paid/funds_diverted/no_refund/unmatched),
+  consolidated ACH payment matching, and fee owed with broker/Reliquify split. Fees accrue
+  only on funds actually received. (`npm run reconcile <rev615.csv> <entries.csv> [--fee 5]
+  [--broker-split 60]`) · route `app/api/reconcile/route.ts`.
 
 ## Claim paths
 CAPE_NOW · CAPE_LATER_PHASE · PROTEST_REQUIRED (deadline attached, route to
@@ -71,7 +76,12 @@ counsel) · NEEDS_REVIEW · NOT_IEEPA. EXPIRED is never assigned automatically.
 2. ~~Validation Result File parser + remediation loop~~ ✓ (`src/lib/validation.ts`)
 3. ~~Opt-in flow: engagement letter e-sign, Resend sequences~~ ✓ (`src/lib/optin.ts`)
 4. ~~Dashboard: brokerage view, declaration detail, QC sign-off + magic-link auth~~ ✓
-5. REV-615 ingestion, payment reconciliation, invoicing + broker split
+5. ~~REV-615 ingestion, payment reconciliation, broker/Reliquify fee split~~ ✓ (`src/lib/rev615.ts`)
+
+All six build-order tasks are scaffolded and tested. Remaining work before production:
+confirm CBP formats (CAPE template, rejection-code catalog, REV-615 layout) against ACE
+Portal guidance, select the e-sign vendor, and wire the Drizzle-backed dashboard/opt-in
+stores + audit_log writes.
 
 ## Compliance notes
 - Filing is done by the licensed broker through their own ACE Portal login. This
