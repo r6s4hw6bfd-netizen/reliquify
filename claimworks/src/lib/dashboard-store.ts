@@ -19,10 +19,14 @@ export function emptyDashboardStore(): DashboardStore {
 }
 
 /**
- * Resolve the dashboard data store. Production wires a Drizzle-backed store scoped by
- * brokerageId (importers/declarations/entries + audit_log writes on sign-off); until then
- * the empty store keeps the pages buildable and truthful.
+ * Resolve the dashboard data source. Returns a Drizzle-backed store (scoped to the user's
+ * brokerage) when DATABASE_URL is set, otherwise the empty store so pages stay buildable and
+ * truthful. The DB client is lazy-imported so module load never evaluates neon() without a URL.
  */
-export function getDashboardStore(): DashboardStore {
-  return emptyDashboardStore();
+export async function getDashboard(email?: string): Promise<{ store: DashboardStore; brokerageId?: string }> {
+  if (!process.env.DATABASE_URL) return { store: emptyDashboardStore() };
+  const [{ db }, mod] = await Promise.all([import("@/db/client"), import("@/db/dashboard-store")]);
+  const brokerageId = await mod.resolveBrokerageId(db, email);
+  if (!brokerageId) return { store: emptyDashboardStore() };
+  return { store: mod.drizzleDashboardStore(db, brokerageId), brokerageId };
 }

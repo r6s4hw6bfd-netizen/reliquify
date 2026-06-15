@@ -65,6 +65,9 @@ export, walk into the meeting with their number.
   (`signOffDeclaration`: a draft cannot reach `ready` without a human signer name).
 - `app/dashboard` + `app/dashboard/declarations/[id]` — authed brokerage view (importers
   ranked, claim pipeline, urgent deadlines) and declaration detail with a QC sign-off action.
+  Reads live data from Postgres when `DATABASE_URL` is set (`src/db/dashboard-store.ts`
+  reconstructs entries via `src/db/entry-mapping.ts` and re-runs the engine), empty state
+  otherwise. Brokerage is resolved from the signed-in email (`resolveBrokerageId`).
 - `src/lib/rev615.ts` + `scripts/reconcile.ts` — REV-615 (Trade CAPE Detail Refund report)
   ingestion + reconciliation: per-entry status (paid/funds_diverted/no_refund/unmatched),
   consolidated ACH payment matching, and fee owed with broker/Reliquify split. Fees accrue
