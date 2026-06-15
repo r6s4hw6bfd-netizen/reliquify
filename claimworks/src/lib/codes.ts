@@ -49,6 +49,28 @@ export const CAPE_MAX_ENTRIES_PER_DECLARATION = 9999;
  *  noncorporate rate as a flat estimate; all derived figures stay flagged as estimates. */
 export const INTEREST_EST_ANNUAL_RATE = 0.07;
 
+/**
+ * CAPE Declaration CSV template — REGULATED CONFIG, also REQUIRES HUMAN VERIFICATION.
+ *
+ * The exact column set/order/header text of the ACE CAPE Declaration upload template is
+ * published only in the ACE Portal "CAPE Information Notice / Quick Reference Guide", which
+ * cbp.gov serves behind a 403 to automated fetch (see codes.ts header). The columns below
+ * are the minimum identifying fields every secondary CAPE guide agrees the declaration keys
+ * on (entry number, IOR, filer); they are intentionally a SINGLE EDIT POINT so the layout can
+ * be corrected in one place once a human confirms the official template. DO NOT ship a real
+ * filing until these headers are reconciled against the ACE template — a header mismatch is
+ * itself a known first-pass rejection cause. (Holland & Knight / Great Lakes / Aprio CAPE
+ * guides, 2026-04; exact template pending ACE Portal confirmation.) */
+export const CAPE_TEMPLATE = {
+  columns: [
+    { key: "entryNumber", header: "Entry Number" },
+    { key: "iorNumber", header: "Importer of Record Number" },
+    { key: "filerCode", header: "Filer Code" },
+  ],
+} as const;
+
+export type CapeColumnKey = (typeof CAPE_TEMPLATE.columns)[number]["key"];
+
 export const ENGINE_VERSION = "0.2.0";
 
 export function isIeepaCh99(hts: string): boolean {
